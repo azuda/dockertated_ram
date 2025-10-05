@@ -8,8 +8,18 @@ services:
       TYPE: FABRIC
       VERSION: 1.20.4
       FABRIC_LOADER_VERSION: 0.16.5
+      # MODRINTH_MODPACK: UUkuOOIP
       MODRINTH_PROJECTS: |
-        fabric-api
+        sharedhealth:QRd5zpnA
+        fabric-api:BPX6fK06
+        starlight:HZYU0kdg
+        from-the-fog:3lQn31SZ
+        ferrite-core:pguEMpy9
+        lithium:nMhjKWVE
+        lazydfu:4SHylIO9
+        chunky:eLVyVb1s
+        fallingtree:mb15RrXi
+      VERSION_FROM_MODRINTH_PROJECTS: true
       RCON_CMDS_STARTUP:  |-
         gamerule playersSleepingPercentage 0
         gamerule shareHealth true
