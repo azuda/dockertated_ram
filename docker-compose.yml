@@ -1,0 +1,23 @@
+services:
+  mc:
+    image: itzg/minecraft-server
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "true"
+      TYPE: FABRIC
+      VERSION: 1.20.4
+      FABRIC_LOADER_VERSION: 0.16.5
+      MODRINTH_PROJECTS: |
+        fabric-api
+      RCON_CMDS_STARTUP:  |-
+        gamerule playersSleepingPercentage 0
+        gamerule shareHealth true
+        gamerule shareHunger true
+        pregen start 200
+      MEMORY: 6G
+    volumes:
+      - ./data:/data
+
+volumes:
+  data: {}
