@@ -106,6 +106,27 @@ resource "aws_eip_association" "mc_eip_assoc" {
   allocation_id = aws_eip.mc_eip.id
 }
 
+resource "aws_cloudwatch_metric_alarm" "mc_idle_shutdown" {
+  count = var.instance_enabled ? 1 : 0
+
+  alarm_name          = "mc-server-idle-shutdown"
+  alarm_description   = "Terminates the mc_server instance after ~1 hour of no player traffic."
+  namespace           = "AWS/EC2"
+  metric_name         = "NetworkOut"
+  statistic           = "Average"
+  period              = 300    # 5 minutes
+  evaluation_periods  = 12     # 12 * 5min = 1 hour
+  threshold           = 100000 # bytes; idle background traffic should stay under this
+  comparison_operator = "LessThanThreshold"
+  treat_missing_data  = "breaching"
+
+  dimensions = {
+    InstanceId = aws_instance.mc_server[0].id
+  }
+
+  alarm_actions = ["arn:aws:automate:us-west-2:ec2:terminate"]
+}
+
 resource "aws_ebs_volume" "mc_data" {
   availability_zone = var.az
   size              = 50 # GB
