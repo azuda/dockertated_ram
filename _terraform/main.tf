@@ -29,11 +29,22 @@ data "aws_security_group" "mc_sg" {
   id = "sg-0ca4ed51a0ca93c10"
 }
 
+# latest amazon linux 2023 arm64 build to prevent hardcoded AMI from going stale
+data "aws_ami" "al2023_arm64" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.*-kernel-6.18-arm64"]
+  }
+}
+
 resource "aws_instance" "mc_server" {
   count = var.instance_enabled ? 1 : 0
 
   availability_zone            = var.az
-  ami                          = "ami-0c9da9b2b7758f931"
+  ami                          = data.aws_ami.al2023_arm64.id
   instance_type                = "t4g.xlarge"
   key_name                     = data.aws_key_pair.mc_key.key_name
   vpc_security_group_ids       = [data.aws_security_group.mc_sg.id]
@@ -137,7 +148,7 @@ resource "aws_ebs_volume" "mc_data" {
   }
 
   lifecycle {
-    prevent_destroy = true  # safety net against accidental `terraform destroy`
+    prevent_destroy = true
   }
 }
 
